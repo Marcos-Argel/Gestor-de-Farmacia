@@ -1,0 +1,46 @@
+# Uso: docker compose up --build
+# Levanta el backend + una base de datos PostgreSQL local, ambos en
+# contenedores, para probar que el Dockerfile funciona ANTES de
+# subirlo a Render. No reemplaza tu PostgreSQL local de desarrollo
+# con DBeaver -- es solo para validar el empaquetado en Docker.
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: farmacia_db_docker
+    environment:
+      POSTGRES_DB: farmacia_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_local_docker
+    ports:
+      - "5433:5432"   # 5433 para no chocar con tu PostgreSQL local en 5432
+    volumes:
+      - farmacia_data:/var/lib/postgresql/data
+      - ./farmacy_schema.sql:/docker-entrypoint-initdb.d/1_schema.sql
+      - ./farmacy_triggers.sql:/docker-entrypoint-initdb.d/2_triggers.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d farmacia_db"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: .
+    container_name: farmacia_backend_docker
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure:5
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/farmacia_db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres_local_docker
+      JWT_SECRET: clave_local_de_prueba_solo_para_docker_compose_1234
+      ADMIN_EMAIL: admin@farmacia.local
+      ADMIN_PASSWORD: admin12345
+      PORT: 8080
+    ports:
+      - "8080:8080"
+
+volumes:
+  farmacia_data:

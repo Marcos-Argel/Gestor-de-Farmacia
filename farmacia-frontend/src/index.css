@@ -1,0 +1,114 @@
+@import "tailwindcss";
+@import "@fontsource-variable/geist";
+
+/* ============================================================
+   TOKENS DE DISENO
+   ============================================================
+   Toda la app usa estos nombres (bg-surface, text-text, border-border,
+   bg-brand-forest...), asi que cambiar un valor aqui cambia todas las
+   pantallas a la vez. El modo oscuro solo redefine las variables dentro
+   de ".dark" (la clase la pone ThemeContext.jsx en <html>).
+   ============================================================ */
+@theme {
+  /* Marca: verde farmacia + cobre */
+  --color-brand-forest: oklch(0.42 0.075 165);
+  --color-brand-forest-dark: oklch(0.35 0.065 165);
+  --color-brand-forest-light: oklch(0.95 0.03 165);
+  --color-brand-mint: oklch(0.8 0.11 165);
+
+  /* Barra lateral (independiente del fondo para que siempre resalte) */
+  --color-sidebar: oklch(0.27 0.045 170);
+  --color-sidebar-accent: oklch(0.33 0.05 170);
+  --color-sidebar-text: oklch(0.87 0.02 165);
+
+  /* Neutros */
+  --color-bg: oklch(0.985 0.004 165);
+  --color-surface: oklch(1 0 0);
+  --color-muted: oklch(0.965 0.006 165);
+  --color-border: oklch(0.92 0.008 165);
+  --color-text: oklch(0.22 0.02 170);
+  --color-text-secondary: oklch(0.5 0.02 170);
+  --color-text-disabled: oklch(0.68 0.015 170);
+
+  /* Acento */
+  --color-accent-copper: oklch(0.6 0.14 50);
+  --color-accent-copper-light: oklch(0.95 0.03 55);
+
+  /* Semanticos */
+  --color-success: oklch(0.58 0.13 158);
+  --color-warning: oklch(0.68 0.14 70);
+  --color-danger: oklch(0.56 0.19 27);
+  --color-info: oklch(0.56 0.13 245);
+
+  --font-display: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 170 / 0.04), 0 1px 3px oklch(0.2 0.02 170 / 0.04);
+}
+
+.dark {
+  /* brand-forest-light se aclara poco a proposito: se usa como fondo de
+     chips con texto brand-forest encima y debe seguir siendo legible. */
+  --color-brand-forest: oklch(0.72 0.1 165);
+  --color-brand-forest-dark: oklch(0.66 0.1 165);
+  --color-brand-forest-light: oklch(0.32 0.04 165);
+
+  --color-sidebar: oklch(0.17 0.02 170);
+  --color-sidebar-accent: oklch(0.24 0.03 170);
+
+  --color-bg: oklch(0.155 0.012 170);
+  --color-surface: oklch(0.2 0.014 170);
+  --color-muted: oklch(0.24 0.014 170);
+  --color-border: oklch(1 0 0 / 0.09);
+  --color-text: oklch(0.96 0.006 165);
+  --color-text-secondary: oklch(0.72 0.015 165);
+  --color-text-disabled: oklch(0.52 0.012 165);
+
+  --color-accent-copper: oklch(0.72 0.13 55);
+  --color-accent-copper-light: oklch(0.3 0.05 50);
+
+  --color-success: oklch(0.72 0.13 158);
+  --color-warning: oklch(0.8 0.13 75);
+  --color-danger: oklch(0.68 0.18 25);
+  --color-info: oklch(0.72 0.11 245);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  h1, h2, h3 {
+    letter-spacing: -0.015em;
+  }
+  ::selection {
+    background-color: color-mix(in oklch, var(--color-brand-forest) 22%, transparent);
+  }
+  button:not(:disabled), [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  /* Las tarjetas (bg-surface + border) ganan una sombra sutil */
+  .bg-surface.border {
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* Botones primarios en modo oscuro: el verde se aclara para resaltar, asi
+   que el texto blanco quedaba casi ilegible. Va FUERA de @layer a
+   proposito: los estilos sin capa le ganan a las utilidades de Tailwind
+   (text-white); dentro de @layer base no tenia ningun efecto. */
+.dark .bg-brand-forest.text-white,
+.dark .bg-brand-forest .text-white {
+  color: oklch(0.17 0.02 170);
+}
+
+/* Numeros alineados en tablas y tarjetas */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}

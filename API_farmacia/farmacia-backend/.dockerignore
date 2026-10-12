@@ -1,0 +1,7 @@
+target/
+.idea/
+*.iml
+.git/
+.gitignore
+*.md
+src/main/resources/application.properties

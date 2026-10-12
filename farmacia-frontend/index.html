@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Farma Argel — Gestor de Farmacia</title>
+    <script>
+      // Se ejecuta ANTES de que React monte nada, para evitar el
+      // "flash" de tema claro por una fraccion de segundo cuando el
+      // usuario ya habia elegido modo oscuro (localStorage). El resto
+      // de la logica del toggle vive en src/context/ThemeContext.jsx.
+      (function () {
+        var tema = localStorage.getItem('farmacia_tema');
+        var prefiereOscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (tema === 'oscuro' || (!tema && prefiereOscuro)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <!-- Google Identity Services: boton/flujo de "Iniciar sesion con
+         Google" que se usa en LoginPage.jsx. Se carga aqui (y no como
+         import de npm) porque asi lo distribuye Google oficialmente. -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
